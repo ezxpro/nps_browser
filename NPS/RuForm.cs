@@ -1039,17 +1039,18 @@ namespace NPS
 
             if (lstTitles.SelectedItems.Count == 0) return;
 
-            GamePatches gp = new GamePatches(lstTitles.SelectedItems[0].Tag as Item, (item) =>
+            foreach( var entry in lstTitles.SelectedItems )
             {
-                DownloadWorker dw = new DownloadWorker(item, this);
-                lstDownloadStatus.Items.Add(dw.lvi);
-                lstDownloadStatus.AddEmbeddedControl(dw.progress, 3, lstDownloadStatus.Items.Count - 1);
-                downloads.Add(dw);
-            });
+                GamePatches gp = new GamePatches( lstTitles.SelectedItems[ 0 ].Tag as Item, ( item ) =>
+                {
+                    DownloadWorker dw = new DownloadWorker( item, this );
+                    lstDownloadStatus.Items.Add( dw.lvi );
+                    lstDownloadStatus.AddEmbeddedControl( dw.progress, 3, lstDownloadStatus.Items.Count - 1 );
+                    downloads.Add( dw );
+                } );
 
-            gp.AskForUpdate();
-
-
+                gp.AskForUpdate();
+            }
         }
 
         private void checkForPatchesAndDownload()
@@ -1062,17 +1063,18 @@ namespace NPS
 
             if( lstTitles.SelectedItems.Count == 0 ) return;
 
-            GamePatches gp = new GamePatches( lstTitles.SelectedItems[ 0 ].Tag as Item, ( item ) =>
+
+            foreach( var entry in lstTitles.SelectedItems )
             {
-                DownloadWorker dw = new DownloadWorker( item, this );
-                lstDownloadStatus.Items.Add( dw.lvi );
-                lstDownloadStatus.AddEmbeddedControl( dw.progress, 3, lstDownloadStatus.Items.Count - 1 );
-                downloads.Add( dw );
-            } );
-
-            gp.DownloadUpdateNoAsk();
-
-
+                GamePatches gp = new GamePatches( lstTitles.SelectedItems[ 0 ].Tag as Item, ( item ) =>
+                {
+                    DownloadWorker dw = new DownloadWorker( item, this );
+                    lstDownloadStatus.Items.Add( dw.lvi );
+                    lstDownloadStatus.AddEmbeddedControl( dw.progress, 3, lstDownloadStatus.Items.Count - 1 );
+                    downloads.Add( dw );
+                } );
+                gp.DownloadUpdateNoAsk();
+            }
         }
 
 
