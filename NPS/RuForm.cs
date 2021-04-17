@@ -704,6 +704,14 @@ namespace NPS
 
         }
 
+        private void downloadAllWithPatchesToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+
+            btnDownload_Click( null, null );
+            downloadAllDlcsToolStripMenuItem_Click( null, null );
+            checkForPatchesAndDownload();
+        }
+
         // lstTitles Menu Strip
         private void showTitleDlcToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1043,6 +1051,31 @@ namespace NPS
 
 
         }
+
+        private void checkForPatchesAndDownload()
+        {
+            if( string.IsNullOrEmpty( Settings.Instance.HMACKey ) )
+            {
+                MessageBox.Show( "No hmackey" );
+                return;
+            }
+
+            if( lstTitles.SelectedItems.Count == 0 ) return;
+
+            GamePatches gp = new GamePatches( lstTitles.SelectedItems[ 0 ].Tag as Item, ( item ) =>
+            {
+                DownloadWorker dw = new DownloadWorker( item, this );
+                lstDownloadStatus.Items.Add( dw.lvi );
+                lstDownloadStatus.AddEmbeddedControl( dw.progress, 3, lstDownloadStatus.Items.Count - 1 );
+                downloads.Add( dw );
+            } );
+
+            gp.DownloadUpdateNoAsk();
+
+
+        }
+
+
 
         private void toggleDownloadedToolStripMenuItem_Click(object sender, EventArgs e)
         {

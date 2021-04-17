@@ -55,6 +55,7 @@ namespace NPS
             this.showTitleDlcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadAllDlcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadAllWithPatchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForPatchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleDownloadedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -288,6 +289,7 @@ namespace NPS
             this.showTitleDlcToolStripMenuItem,
             this.downloadAllDlcsToolStripMenuItem,
             this.downloadAllToolStripMenuItem,
+            this.downloadAllWithPatchesToolStripMenuItem,
             this.checkForPatchesToolStripMenuItem,
             this.toggleDownloadedToolStripMenuItem,
             this.toolStripMenuItem1});
@@ -324,6 +326,13 @@ namespace NPS
             this.downloadAllToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.downloadAllToolStripMenuItem.Text = "Download All";
             this.downloadAllToolStripMenuItem.Click += new System.EventHandler(this.downloadAllToolStripMenuItem_Click);
+            // 
+            // downloadAllWithPatchesToolStripMenuItem
+            // 
+            this.downloadAllWithPatchesToolStripMenuItem.Name = "downloadAllWithPatchesToolStripMenuItem";
+            this.downloadAllWithPatchesToolStripMenuItem.Size = new System.Drawing.Size( 197, 22 );
+            this.downloadAllWithPatchesToolStripMenuItem.Text = "Download All w/ Patches";
+            this.downloadAllWithPatchesToolStripMenuItem.Click += new System.EventHandler( this.downloadAllWithPatchesToolStripMenuItem_Click );
             // 
             // checkForPatchesToolStripMenuItem
             // 
@@ -976,6 +985,7 @@ namespace NPS
         private System.Windows.Forms.ColumnHeader colLastModified;
         private System.Windows.Forms.ToolStripMenuItem downloadAllDlcsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadAllWithPatchesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadAndUnpackToolStripMenuItem;
         private System.Windows.Forms.LinkLabel lnkOpenRenaScene;
         private System.Windows.Forms.Panel pnlMain;
