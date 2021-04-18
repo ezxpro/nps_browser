@@ -18,7 +18,7 @@ namespace NPS
 {
     public partial class NPSBrowser : Form
     {
-        public const string version = "0.94"; //Dyrqrap
+        public const string version = "0.95";
         List<Item> currentDatabase = new List<Item>();
 
         List<Item> databaseAll = new List<Item>();
@@ -49,7 +49,8 @@ namespace NPS
                 o.ShowDialog();
             }
 
-            NewVersionCheck();
+            // jon: not hooked up to my repo yet, and this repo is unmaintained.
+            // NewVersionCheck();
         }
 
         private void NoPayStationBrowser_Load(object sender, EventArgs e)
