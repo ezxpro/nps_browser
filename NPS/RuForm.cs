@@ -374,90 +374,115 @@ namespace NPS
                 System.Diagnostics.Process.Start(url);
         }
 
+        private bool itemMatchesSearchEntries(Item item, List<List<string>> searchEntries)
+        {
+            bool dirty = false;
+            int searchEntryMatches = 0;
+            foreach( List<string> searchEntry in searchEntries )
+            {
+                dirty = false;
+
+                foreach( String searchTerm in searchEntry )
+                {
+                    if( searchTerm.Length == 0 ) continue;
+                    if( searchTerm.StartsWith( "-" ) )
+                    {
+
+                        if( ( item.TitleName.ToLower().Contains( searchTerm.Substring( 1 ).ToLower() ) ) 
+                            // || ( item.ContentId.ToLower().Contains( searchTerm.Substring( 1 ).ToLower() ) ) // Causing a crash when the game doesn't have a ContentId
+                            )
+                        {
+                            dirty = true;
+                            break;
+                        }
+                    }
+                    else if( ( !item.TitleName.ToLower().Contains( searchTerm.ToLower() ) ) &&
+                        ( !item.TitleId.ToLower().Contains( searchTerm.ToLower() ) ) )
+                    {
+                        dirty = true;
+                    }
+
+                }
+                if( !dirty )
+                {
+                    searchEntryMatches++;
+                }
+            }
+            return (searchEntryMatches > 0 && searchEntries.Count > 0 );
+        }
+
+        private List<List<string>> parseSearchBar()
+        {
+            List<List<string>> searchEntries = new List<List<string>>();
+
+            string[] rawEntries = txtSearch.Text?.Split( "||".ToCharArray() );
+            foreach( string entry in rawEntries )
+            {
+                if (entry != "")
+                {
+	                List<string> searchTerms = new List<string>();
+	
+	                string[] rawTerms = entry?.Split( ' ' );
+	                foreach( string terms in rawTerms )
+	                {
+	                    if( terms != "" )
+	                    {
+	                        searchTerms.Add( terms );
+	                    }
+	                }
+	                searchEntries.Add( searchTerms );
+                }
+            }
+            return searchEntries;
+        }
+
         public void updateSearch()
         {
 
             List<Item> itms = new List<Item>();
-            String[] splitStr = txtSearch.Text.Split(' ');
+            List<List<string>> searchEntries = parseSearchBar();
 
             foreach (var item in currentDatabase)
             {
+                bool dirty =  searchEntries.Count != 0 && !itemMatchesSearchEntries(item, searchEntries);
+ 
 
-                bool dirty = false;
-
-
-                foreach (String i in splitStr)
+                if (!dirty)
                 {
-                    if (i.Length == 0) continue;
-                    if (i.StartsWith("-") == true)
-                    {
-
-                        if ((item.TitleName.ToLower().Contains(i.Substring(1).ToLower()) == true) || (item.ContentId.ToLower().Contains(i.Substring(1).ToLower()) == true))
-                        {
-
-                            dirty = true;
-                            break;
-
-                        }
-
-                    }
-                    else if ((item.TitleName.ToLower().Contains(i.ToLower()) == false) && (item.TitleId.ToLower().Contains(i.ToLower()) == false))
-                    {
-
-                        dirty = true;
-                        break;
-
-                    }
-
-                }
-
-
-                if (dirty == false)
-                {
-
                     if (rbnDLC.Checked == true)
                     {
-
                         if ((rbnUndownloaded.Checked == true) && (Settings.Instance.history.completedDownloading.Contains(item))) dirty = true;
                         if ((rbnDownloaded.Checked == true) && (!Settings.Instance.history.completedDownloading.Contains(item))) dirty = true;
-
                     }
                     else
                     {
-
                         if ((!Settings.Instance.history.completedDownloading.Contains(item)) && (rbnDownloaded.Checked == true)) dirty = true;
                         else if (Settings.Instance.history.completedDownloading.Contains(item))
                         {
-
-
                             if ((rbnUndownloaded.Checked == true) && (chkUnless.Checked == false)) dirty = true;
 
                             else if ((rbnUndownloaded.Checked == true) && (chkUnless.Checked == true))
                             {
-
-
                                 int newDLC = 0;
 
                                 foreach (var item2 in item.DlcItm)
                                 {
-
                                     if (!Settings.Instance.history.completedDownloading.Contains(item2)) newDLC++;
-
-
                                 }
-
                                 if (newDLC == 0) dirty = true;
-
                             }
-
                         }
-
                     }
-
                 }
 
-                if ((dirty == false) && ContainsCmbBox(cmbRegion, item.Region) && ContainsCmbBox(cmbType, item.contentType)) /*(cmbRegion.Text == "ALL" || item.Region.Contains(cmbRegion.Text)))*/ itms.Add(item);
-
+                if ((dirty == false) && 
+                    ContainsCmbBox(cmbRegion, item.Region) && 
+                    ContainsCmbBox(cmbType, item.contentType)
+                    )
+                /*(cmbRegion.Text == "ALL" || item.Region.Contains(cmbRegion.Text)))*/
+                {
+                    itms.Add( item );
+                }
             }
 
             RefreshList(itms);
