@@ -12,6 +12,26 @@ using System.IO.Compression;
 
 namespace NPS
 {
+    enum EPkgType
+    {
+        PKG_TYPE_VITA_APP,
+        PKG_TYPE_VITA_DLC,
+        PKG_TYPE_VITA_PATCH,
+        PKG_TYPE_VITA_PSM,
+        PKG_TYPE_VITA_THEME,
+        PKG_TYPE_PSP,
+        PKG_TYPE_PSP_DLC,
+        PKG_TYPE_PSP_UPDATE,
+        PKG_TYPE_PSP_THEME,
+        PKG_TYPE_PSX,
+        PKG_TYPE_PS3_GAME,
+        PKG_TYPE_PS3_DLC,
+        PKG_TYPE_PS3_DEMO,
+        PKG_TYPE_PS3_THEME,
+        PKG_TYPE_PS3_AVATAR,
+        PKG_TYPE_UNKNOWN,
+    }
+
     [System.Serializable]
     public class DownloadWorker
     {
@@ -23,6 +43,9 @@ namespace NPS
         public ProgressBar progress = new ProgressBar();
         public ListViewItem lvi;
         public int progressValue = 0;
+        private EPkgType pkgType;
+        private string pkgOutputPath;
+        private string pkgOutputDirectory;
         //public bool isRunning { get; private set; }
         //public bool isCompleted { get; private set; }
         //public bool isCanceled { get; private set; }
@@ -75,6 +98,108 @@ namespace NPS
             }
         }
 
+        private EPkgType GetPackageType(Item item)
+        {
+            if( item.ItsPS3 )
+            {
+                if( item.IsDLC )
+                    return EPkgType.PKG_TYPE_PS3_DLC;
+                else if( item.IsTheme )
+                    return EPkgType.PKG_TYPE_PS3_THEME;
+                else if( item.IsAvatar )
+                    return EPkgType.PKG_TYPE_PS3_AVATAR;
+                else // Game
+                    return EPkgType.PKG_TYPE_PS3_GAME;
+            }
+            else if( item.ItsPS4 )
+                return EPkgType.PKG_TYPE_UNKNOWN;
+            else if( item.ItsPsp )
+            {
+                if( item.IsDLC )
+                    return EPkgType.PKG_TYPE_PSP_DLC;
+                else if( item.IsTheme )
+                    return EPkgType.PKG_TYPE_PSP_THEME;
+                else if( item.IsUpdate )
+                    return EPkgType.PKG_TYPE_PSP_UPDATE;
+                else // Game
+                    return EPkgType.PKG_TYPE_PSP;
+            }
+            else if( item.ItsPsx )
+                return EPkgType.PKG_TYPE_PSX;
+            else // PS Vita
+            {
+                if( item.IsDLC )
+                    return EPkgType.PKG_TYPE_VITA_DLC;
+                else if( item.IsTheme )
+                    return EPkgType.PKG_TYPE_VITA_THEME;
+                else if( item.IsUpdate )
+                    return EPkgType.PKG_TYPE_VITA_PATCH;
+                else // Game
+                    return EPkgType.PKG_TYPE_VITA_APP;
+            }
+        }
+
+        private void SetDownloadOutputDirectory()
+        {
+            string relDir = "";
+            switch( pkgType )
+            {
+                case EPkgType.PKG_TYPE_VITA_APP:
+                    relDir = "Pkg\\PSV\\APP";
+                    break;
+                case EPkgType.PKG_TYPE_VITA_DLC:
+                    relDir = "Pkg\\PSV\\DLC";
+                    break;
+                case EPkgType.PKG_TYPE_VITA_PATCH:
+                    relDir = "Pkg\\PSV\\PATCH";
+                    break;
+                case EPkgType.PKG_TYPE_VITA_PSM:
+                    relDir = "Pkg\\PSV\\PSM";
+                    break;
+                case EPkgType.PKG_TYPE_VITA_THEME:
+                    relDir = "Pkg\\PSV\\THEME";
+                    break;
+                case EPkgType.PKG_TYPE_PSP:
+                    relDir = "Pkg\\PSP\\GAME";
+                    break;
+                case EPkgType.PKG_TYPE_PSP_DLC:
+                    relDir = "Pkg\\PSP\\DLC";
+                    break;
+                case EPkgType.PKG_TYPE_PSP_UPDATE:
+                    relDir = "Pkg\\PSP\\UPDATE";
+                    break;
+                case EPkgType.PKG_TYPE_PSP_THEME:
+                    relDir = "Pkg\\PSP\\THEME";
+                    break;
+                case EPkgType.PKG_TYPE_PSX:
+                    relDir = "Pkg\\PSX\\GAME";
+                    break;
+                case EPkgType.PKG_TYPE_PS3_GAME:
+                    relDir = "Pkg\\PS3\\GAME";
+                    break;
+                case EPkgType.PKG_TYPE_PS3_DLC:
+                    relDir = "Pkg\\PS3\\DLC";
+                    break;
+                case EPkgType.PKG_TYPE_PS3_DEMO:
+                    relDir = "Pkg\\PS3\\DEMO";
+                    break;
+                case EPkgType.PKG_TYPE_PS3_THEME:
+                    relDir = "Pkg\\PS3\\THEME";
+                    break;
+                case EPkgType.PKG_TYPE_PS3_AVATAR:
+                    relDir = "Pkg\\PS3\\AVATAR";
+                    break;
+                case EPkgType.PKG_TYPE_UNKNOWN:
+                    relDir = "Pkg\\UNKNOWN";
+                    break;
+                default:
+                    relDir = "Pkg\\UNKNOWN";
+                    break;
+            }
+            pkgOutputDirectory = Path.Combine( Settings.Instance.downloadDir, relDir );
+            pkgOutputPath = Path.Combine( pkgOutputDirectory, currentDownload.DownloadFileName + currentDownload.extension );
+        }
+
 
         public void Start()
         {
@@ -83,9 +208,14 @@ namespace NPS
             //isRunning = true;
             status = WorkerStatus.Running;
 
+            pkgType = GetPackageType( currentDownload );
+            SetDownloadOutputDirectory();
+            if ( !Directory.Exists(pkgOutputDirectory) )
+                Directory.CreateDirectory( pkgOutputDirectory );
+
             Task.Run(() =>
             {
-                DownloadFile(currentDownload.pkg, Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension));
+                DownloadFile(currentDownload.pkg, pkgOutputPath);
             });
         }
 
@@ -145,7 +275,7 @@ namespace NPS
                 status = WorkerStatus.Queued;
             }
         }
-        public string Pkg { get { return Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension); } }
+        public string Pkg { get { return pkgOutputPath; } }
 
         public void DeletePkg()
         {
@@ -155,10 +285,10 @@ namespace NPS
                 {
                     try
                     {
-                        if (File.Exists(Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension)))
+                        if (File.Exists( pkgOutputPath ))
                         {
                             System.Threading.Thread.Sleep(400);
-                            File.Delete(Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension));
+                            File.Delete( pkgOutputPath );
                         }
                     }
                     catch { i = 5; }
@@ -214,7 +344,7 @@ namespace NPS
 
                 var replacements = new Dictionary<string, string>
                 {
-                    ["{pkgfile}"] = "\"" + Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension) + "\"",
+                    ["{pkgfile}"] = "\"" + pkgOutputPath + "\"",
                     ["{titleid}"] = currentDownload.TitleId.Substring(0, 9),
                     ["{gametitle}"] = tempName,
                     ["{region}"] = currentDownload.Region,
@@ -259,7 +389,7 @@ namespace NPS
 
 
 
-                    using (var archive = System.IO.Compression.ZipFile.OpenRead(Path.Combine(Settings.Instance.downloadDir, currentDownload.DownloadFileName + currentDownload.extension)))
+                    using (var archive = System.IO.Compression.ZipFile.OpenRead(pkgOutputPath))
                     {
                         foreach (var entry in archive.Entries)
                         {

@@ -623,32 +623,32 @@ namespace NPS
             // 
             // btn_pspthmuri
             // 
-            this.btn_pspthmuri.Location = new System.Drawing.Point(341, 48);
+            this.btn_pspthmuri.Location = new System.Drawing.Point(751, 22);
             this.btn_pspthmuri.Name = "btn_pspthmuri";
             this.btn_pspthmuri.Size = new System.Drawing.Size(75, 23);
             this.btn_pspthmuri.TabIndex = 38;
             this.btn_pspthmuri.Text = "Browse";
             this.btn_pspthmuri.UseVisualStyleBackColor = true;
-            this.btn_pspthmuri.Visible = false;
+            this.btn_pspthmuri.Visible = true;
             this.btn_pspthmuri.Click += new System.EventHandler(this.btn_pspthmuri_Click);
             // 
             // lbl_pspthmuri
             // 
             this.lbl_pspthmuri.AutoSize = true;
-            this.lbl_pspthmuri.Location = new System.Drawing.Point(6, 51);
+            this.lbl_pspthmuri.Location = new System.Drawing.Point(440, 27);
             this.lbl_pspthmuri.Name = "lbl_pspthmuri";
             this.lbl_pspthmuri.Size = new System.Drawing.Size(45, 13);
             this.lbl_pspthmuri.TabIndex = 39;
             this.lbl_pspthmuri.Text = "PSP tsv";
-            this.lbl_pspthmuri.Visible = false;
+            this.lbl_pspthmuri.Visible = true;
             // 
             // tb_pspthmuri
             // 
-            this.tb_pspthmuri.Location = new System.Drawing.Point(77, 48);
+            this.tb_pspthmuri.Location = new System.Drawing.Point(487, 24);
             this.tb_pspthmuri.Name = "tb_pspthmuri";
             this.tb_pspthmuri.Size = new System.Drawing.Size(258, 20);
             this.tb_pspthmuri.TabIndex = 37;
-            this.tb_pspthmuri.Visible = false;
+            this.tb_pspthmuri.Visible = true;
             // 
             // lbl_psvthmuri
             // 
