@@ -46,6 +46,14 @@ namespace NPS
 
         public Item() { }
 
+        public string GetRegionCode()
+        {
+            if( Region == "ASIA" )
+            {
+                return "AS";
+            }
+            else return Region;
+        }
 
 
         public void CalculateDlCs(Item[] dlcDbs)

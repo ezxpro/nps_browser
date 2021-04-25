@@ -160,34 +160,34 @@ namespace NPS
                     relDir = "Pkg\\PSV\\THEME";
                     break;
                 case EPkgType.PKG_TYPE_PSP:
-                    relDir = "Pkg\\PSP\\GAME";
+                    relDir = String.Format("PSP\\{0}\\PKG", currentDownload.TitleId);
                     break;
                 case EPkgType.PKG_TYPE_PSP_DLC:
-                    relDir = "Pkg\\PSP\\DLC";
+                    relDir = String.Format("PSP\\{0}\\PKG\\DLC", currentDownload.TitleId);
                     break;
                 case EPkgType.PKG_TYPE_PSP_UPDATE:
-                    relDir = "Pkg\\PSP\\UPDATE";
+                    relDir = String.Format( "PSP\\{0}\\PKG\\UPDATE", currentDownload.TitleId);
                     break;
                 case EPkgType.PKG_TYPE_PSP_THEME:
-                    relDir = "Pkg\\PSP\\THEME";
+                    relDir = "PSP\\THEME\\PKG";
                     break;
                 case EPkgType.PKG_TYPE_PSX:
-                    relDir = "Pkg\\PSX\\GAME";
+                    relDir = String.Format( "PSX\\{0}\\PKG", currentDownload.TitleId );
                     break;
                 case EPkgType.PKG_TYPE_PS3_GAME:
-                    relDir = "Pkg\\PS3\\GAME";
+                    relDir = String.Format( "PS3\\{0}\\packages", currentDownload.TitleId );
                     break;
                 case EPkgType.PKG_TYPE_PS3_DLC:
-                    relDir = "Pkg\\PS3\\DLC";
+                    relDir = String.Format( "PS3\\{0}\\packages", currentDownload.TitleId );
                     break;
                 case EPkgType.PKG_TYPE_PS3_DEMO:
-                    relDir = "Pkg\\PS3\\DEMO";
+                    relDir = String.Format( "PS3\\DEMO\\{0}\\packages", currentDownload.TitleId );
                     break;
                 case EPkgType.PKG_TYPE_PS3_THEME:
-                    relDir = "Pkg\\PS3\\THEME";
+                    relDir = "PS3\\THEME\\PKG";
                     break;
                 case EPkgType.PKG_TYPE_PS3_AVATAR:
-                    relDir = "Pkg\\PS3\\AVATAR";
+                    relDir = "PS3\\AVATAR\\PKG";
                     break;
                 case EPkgType.PKG_TYPE_UNKNOWN:
                     relDir = "Pkg\\UNKNOWN";
@@ -440,7 +440,14 @@ namespace NPS
                     {
                         Directory.CreateDirectory(path);
                     }
-                    File.Move(Settings.Instance.downloadDir + Path.DirectorySeparatorChar + currentDownload.DownloadFileName + currentDownload.extension, path + Path.DirectorySeparatorChar + currentDownload.DownloadFileName + currentDownload.extension);
+                    //string newPkgName = String.Format( "{0} [{1}] [{2}]", currentDownload.TitleName, currentDownload.TitleId, currentDownload.GetRegionCode() );
+                    string newPkgName = currentDownload.ContentId;
+                    if( currentDownload.IsDLC )
+                        newPkgName = "[DLC] " + newPkgName;
+                    if( currentDownload.IsUpdate )
+                        newPkgName = "[UPDATE] " + newPkgName;
+                    File.Move(pkgOutputPath, path + Path.DirectorySeparatorChar + newPkgName + currentDownload.extension);
+                    
 
                     // jon: changing to custom directory location
                     path = gamePath + Path.DirectorySeparatorChar + "exdata";
