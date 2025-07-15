@@ -430,23 +430,16 @@ namespace NPS
                 try
                 {
                     lvi.SubItems[2].Text = "Processing";
-                    // jon: custom PS3 file placement
-                    string gamePath = Settings.Instance.downloadDir + Path.DirectorySeparatorChar +
-                        "PS3" + Path.DirectorySeparatorChar +
-                        currentDownload.TitleId;
-                    string path = gamePath + Path.DirectorySeparatorChar + "packages";
-                    // jon: end
-                    if( !Directory.Exists(path))
+                    string path = Settings.Instance.downloadDir + Path.DirectorySeparatorChar + "packages";
+                    if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
                     }
                     File.Move(Settings.Instance.downloadDir + Path.DirectorySeparatorChar + currentDownload.DownloadFileName + currentDownload.extension, path + Path.DirectorySeparatorChar + currentDownload.DownloadFileName + currentDownload.extension);
 
-                    // jon: changing to custom directory location
-                    path = gamePath + Path.DirectorySeparatorChar + "exdata";
-                    // jon: end
+                    path = Settings.Instance.downloadDir + Path.DirectorySeparatorChar + "exdata";
 
-                    if( !string.IsNullOrEmpty(currentDownload.ContentId) && currentDownload.ContentId.ToLower() != "missing" && currentDownload.zRif.ToLower() != "NOT REQUIRED".ToLower() && currentDownload.zRif.Length % 2 == 0)
+                    if (!string.IsNullOrEmpty(currentDownload.ContentId) && currentDownload.ContentId.ToLower() != "missing" && currentDownload.zRif.ToLower() != "NOT REQUIRED".ToLower() && currentDownload.zRif.Length % 2 == 0)
                     {
                         if (!Directory.Exists(path))
                         {
